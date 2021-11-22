@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "666599883321",
+    "project_id": "restsuitapp",
+    "storage_bucket": "restsuitapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:666599883321:android:03d12a39e3c7acc6b3c3e8",
+        "android_client_info": {
+          "package_name": "com.example.restsuitapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "666599883321-l18a88j80vtfrejroqiu1ln72viuppgt.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDp1HpFAQ25F7oDvjxuOEQkM3wLs3ZR_nI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "666599883321-l18a88j80vtfrejroqiu1ln72viuppgt.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "666599883321-n5fv2jrq63rm4qs0u5g2fl4jd8cfmfuu.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.restsuitapp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

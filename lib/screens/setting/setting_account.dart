@@ -1,3 +1,5 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:restsuitapp/utility/app_style.dart';
 
@@ -9,11 +11,36 @@ class SettingAccount extends StatefulWidget {
 }
 
 class _SettingAccountState extends State<SettingAccount> {
-  String newPassWord = '', conPassWord = '', oldPassWord = '', passWord = '';
+  String newPassWord = '',
+      conPassWord = '',
+      oldPassWord = '',
+      passWord = '',
+      email = '',
+      displayName = '';
+
+  @override
+  void initState() {
+    super.initState();
+    findNameAndEmail();
+  }
+
+  Future<void> findNameAndEmail() async {
+    await Firebase.initializeApp().then((value) async {
+      FirebaseAuth.instance.authStateChanges().listen((event) {
+        setState(() {
+          displayName = event!.displayName!;
+          email = event.email!;
+          print(displayName);
+          print(email);
+        });
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    const userName = 'KANUM';
-    const userEmail = 'Test@gmail.com';
+    // final userName = name;
+    // final userEmail = email;
     const urlImage =
         'https://i.guim.co.uk/img/media/26392d05302e02f7bf4eb143bb84c8097d09144b/446_167_3683_2210/master/3683.jpg?width=1200&height=1200&quality=85&auto=format&fit=crop&s=49ed3252c0b2ffb49cf8b508892e452d';
 
@@ -55,7 +82,7 @@ class _SettingAccountState extends State<SettingAccount> {
             AppStyle().mySizebox(), AppStyle().mySizebox(),
             AppStyle().mySizebox(),
             buildHeader(
-                urlImage: urlImage, userName: userName, userEmail: userEmail),
+                urlImage: urlImage, userName: displayName, userEmail: email),
             const Divider(
               color: Colors.transparent,
               thickness: 0.5,
@@ -69,7 +96,7 @@ class _SettingAccountState extends State<SettingAccount> {
               height: 20.0,
             ),
             deleteAccountButton(),
-           
+
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Column(
@@ -109,7 +136,6 @@ class _SettingAccountState extends State<SettingAccount> {
                         SizedBox(
                           height: 42,
                         ),
-                       
                       ],
                     ),
                     radius: 45,
@@ -144,22 +170,26 @@ class _SettingAccountState extends State<SettingAccount> {
                 children: [
                   const SizedBox(
                     height: 30.0,
-                    width: 57.0,
+                    width: 56.0,
                   ),
                   SizedBox(
                     height: 30.0,
                     width: 90.0,
                     child: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        editProfile(context);
+                      },
                       child: const Text(
                         'Edit',
                         style: TextStyle(
                             fontSize: 16.0, fontWeight: FontWeight.normal),
                       ),
                       style: ElevatedButton.styleFrom(
-                          primary: Colors.grey.shade400,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(11.0))),
+                        primary: Colors.grey.shade400,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(11.0),
+                        ),
+                      ),
                     ),
                   ),
                 ],
@@ -449,5 +479,95 @@ class _SettingAccountState extends State<SettingAccount> {
       ),
     );
   }
-}
 
+  Future<void> editProfile(BuildContext context) async {
+    showDialog(
+      context: context,
+      builder: (context) => SimpleDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(11.0),
+        ),
+        title: const Center(
+          child: Text('Edit your profile.'),
+        ),
+        children: [
+          Column(
+            children: [
+              SizedBox(
+                width: 220.0,
+                child: TextFormField(
+                  onChanged: (value) => displayName = value.trim(),
+                  initialValue: displayName,
+                  decoration: const InputDecoration(
+                    fillColor: Colors.transparent,
+                    filled: true,
+                    labelStyle: TextStyle(
+                      color: Colors.black45,
+                      fontWeight: FontWeight.normal,
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.transparent),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const Divider(
+            color: Colors.transparent,
+            height: 20.0,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              ElevatedButton(
+                onPressed: () async {
+                  print('displayname = $displayName');
+                  await Firebase.initializeApp().then((value) async {
+                    FirebaseAuth.instance.authStateChanges().listen((event) {
+                      event!.updateDisplayName(displayName).then((value) {
+                        findNameAndEmail();
+                        Navigator.pop(context);
+                      });
+                    });
+                  });
+                },
+                child: const Text(
+                  '  Save  ',
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.normal,
+                      fontSize: 20.0),
+                ),
+                style: ElevatedButton.styleFrom(
+                  primary: AppStyle().fontColor,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                ),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text(
+                  'Cancel',
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.normal,
+                      fontSize: 20.0),
+                ),
+                style: ElevatedButton.styleFrom(
+                  primary: Colors.red.shade400,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                ),
+              )
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}

@@ -27,7 +27,7 @@ class _WelcomeState extends State<Welcome> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: const NavigationDrawer(),
+      drawer:  NavigationDrawerPage(),
       appBar: AppBar(
         title: SizedBox(
           width: 50,

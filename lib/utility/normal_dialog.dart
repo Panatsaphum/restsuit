@@ -36,3 +36,4 @@ Future<void> norDialog(BuildContext context, String message) async {
     ),
   );
 }
+

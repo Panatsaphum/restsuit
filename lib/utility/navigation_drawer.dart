@@ -1,3 +1,5 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:restsuitapp/screens/setting/add_menu.dart';
 import 'package:restsuitapp/screens/setting/edit_menu.dart';
@@ -6,14 +8,40 @@ import 'package:restsuitapp/screens/setting/setting_account.dart';
 import 'package:restsuitapp/screens/welcom.dart';
 import 'package:restsuitapp/utility/app_style.dart';
 
-class NavigationDrawer extends StatelessWidget {
-  const NavigationDrawer({Key? key}) : super(key: key);
+class NavigationDrawerPage extends StatefulWidget {
+  const NavigationDrawerPage({Key? key}) : super(key: key);
+
+  @override
+  _NavigationDrawerPageState createState() => _NavigationDrawerPageState();
+}
+
+class _NavigationDrawerPageState extends State<NavigationDrawerPage> {
+  String name = '', email = '';
   final padding = const EdgeInsets.symmetric(horizontal: 20);
 
   @override
+  void initState() {
+    super.initState();
+    findNameAndEmail();
+  }
+
+  Future<void> findNameAndEmail() async {
+    await Firebase.initializeApp().then((value) async {
+      FirebaseAuth.instance.authStateChanges().listen((event) {
+        setState(() {
+          name = event!.displayName!;
+          email = event.email!;
+          print(name);
+          print(email);
+        });
+      });
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    const userName = 'KANUM';
-    const userEmail = 'Test@gmail.com';
+    final userName = name;
+    final userEmail = email;
     const urlImage =
         'https://i.guim.co.uk/img/media/26392d05302e02f7bf4eb143bb84c8097d09144b/446_167_3683_2210/master/3683.jpg?width=1200&height=1200&quality=85&auto=format&fit=crop&s=49ed3252c0b2ffb49cf8b508892e452d';
 
@@ -201,3 +229,4 @@ class NavigationDrawer extends StatelessWidget {
         icon: const Icon(Icons.settings));
   }
 }
+
